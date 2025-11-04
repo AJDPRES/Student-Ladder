@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState, type WheelEvent } from 'react';
+import { useCallback, useMemo, useRef, useState, type WheelEvent } from 'react';
 
 type Company = {
   name: string;
@@ -16,36 +16,28 @@ const COMPANY_CARDS: Company[] = [
   { name: 'JP Morgan', imageSrc: '/images/job-search/cards/related-company-card.png' },
   { name: 'Citigroup', imageSrc: '/images/job-search/cards/related-company-card.png' },
   { name: 'Deloitte', imageSrc: '/images/job-search/cards/related-company-card.png' },
+  { name: 'EY', imageSrc: '/images/job-search/cards/related-company-card.png' },
+  { name: 'KPMG', imageSrc: '/images/job-search/cards/related-company-card.png' },
+  { name: 'PwC', imageSrc: '/images/job-search/cards/related-company-card.png' },
+  { name: 'Accenture', imageSrc: '/images/job-search/cards/related-company-card.png' },
+  { name: 'McKinsey & Company', imageSrc: '/images/job-search/cards/related-company-card.png' },
+  { name: 'Boston Consulting Group', imageSrc: '/images/job-search/cards/related-company-card.png' },
+  { name: 'Bain & Company', imageSrc: '/images/job-search/cards/related-company-card.png' },
 ];
 
 const GRID_PREVIEW_COUNT = 4;
-const SCROLLER_TARGET_COUNT = 12;
+const SCROLLER_TARGET_COUNT = 15;
 const LEFT_FADE_THRESHOLD = 12;
 const RIGHT_FADE_THRESHOLD = 16;
-const CARD_WIDTH = 180.88;
-const TRACK_PADDING = 16;
-// Minimal offset to clear proximity snapping reliably (kept subtle)
-const MIN_LEFT_OFFSET = 24; // px
-// Target: ~20% into the first card from its left edge plus track padding
-const INITIAL_SCROLL_OFFSET = TRACK_PADDING + CARD_WIDTH * 0.2; // ~52px
 
 export default function RelatedCompanies() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showLeftFade, setShowLeftFade] = useState(false);
   const [showRightFade, setShowRightFade] = useState(false);
-  const [isAtStart, setIsAtStart] = useState(true);
-  const [hasDepartedStart, setHasDepartedStart] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
-  const isExpandedRef = useRef(isExpanded);
   const isProgrammaticRef = useRef(false);
   const expansionPhaseRef = useRef<'preview' | 'opening' | 'open'>('preview');
-  const userInteractedRef = useRef(false);
-  const hasDepartedStartRef = useRef(false);
   const initialFadesRef = useRef(false);
-
-  useEffect(() => {
-    isExpandedRef.current = isExpanded;
-  }, [isExpanded]);
 
   const previewCompanies = COMPANY_CARDS.slice(0, GRID_PREVIEW_COUNT);
   const scrollerCompanies = useMemo(() => {
@@ -57,11 +49,7 @@ export default function RelatedCompanies() {
     setIsExpanded(false);
     setShowLeftFade(false);
     setShowRightFade(false);
-    setIsAtStart(true);
-    setHasDepartedStart(false);
     expansionPhaseRef.current = 'preview';
-    userInteractedRef.current = false;
-    hasDepartedStartRef.current = false;
     initialFadesRef.current = false;
     const viewport = scrollerRef.current;
     if (!viewport) return;
@@ -76,8 +64,8 @@ export default function RelatedCompanies() {
     (
       viewport: HTMLDivElement,
       {
-        allowCollapse = true,
-        allowFadeReset = true,
+        allowCollapse: _allowCollapse = true,
+        allowFadeReset: _allowFadeReset = true,
       }: { allowCollapse?: boolean; allowFadeReset?: boolean } = {}
     ) => {
       if (expansionPhaseRef.current === 'opening') {
@@ -89,72 +77,53 @@ export default function RelatedCompanies() {
       const atStart = viewport.scrollLeft <= LEFT_FADE_THRESHOLD;
       const atEnd = remaining <= RIGHT_FADE_THRESHOLD;
       const hasOverflow = maxScroll > 0;
-      if (!atStart) {
-        hasDepartedStartRef.current = true;
-      }
 
       if (atStart) {
-        setIsAtStart(true);
-        if (initialFadesRef.current) {
-          setShowLeftFade(true);
-          setShowRightFade(hasOverflow);
-          return;
-        }
-        if (allowFadeReset) {
-          setShowLeftFade(false);
-          setShowRightFade(hasOverflow);
-        }
+        setShowLeftFade(hasOverflow && viewport.scrollLeft > 0);
+        setShowRightFade(hasOverflow);
+        if (initialFadesRef.current) initialFadesRef.current = false;
         return;
       }
 
-      setIsAtStart(false);
       setShowLeftFade(true);
       setShowRightFade(!atEnd);
-      if (!hasDepartedStartRef.current) {
-        hasDepartedStartRef.current = true;
-        setHasDepartedStart(true);
-      }
       if (initialFadesRef.current) initialFadesRef.current = false;
     },
     [collapseToPreview]
   );
 
-  const handleToggle = () => {
-    if (isExpanded && isAtStart) {
-      collapseToPreview();
+  const openAll = () => {
+    if (isExpanded) {
       return;
     }
 
-    if (!isExpanded) {
-      setIsExpanded(true);
-      setIsAtStart(true);
-      // Start with fades off, then fade them in after the scroller begins its own fade-in
-      setShowLeftFade(false);
-      setShowRightFade(false);
-      expansionPhaseRef.current = 'open';
-      userInteractedRef.current = false;
-      hasDepartedStartRef.current = false;
-      setHasDepartedStart(false);
-      initialFadesRef.current = true;
-      // Let the scroller mount and begin opacity transition, then fade in the sides
+    setIsExpanded(true);
+    // Start with fades off, then fade them in after the scroller begins its own fade-in
+    setShowLeftFade(false);
+    setShowRightFade(false);
+    expansionPhaseRef.current = 'open';
+    initialFadesRef.current = true;
+    // Let the scroller mount and begin opacity transition, then fade in the sides
+    requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
+        const viewport = scrollerRef.current;
+        if (viewport) {
+          viewport.scrollTo({ left: 0, behavior: 'auto' });
+          updateFadeState(viewport, { allowCollapse: false, allowFadeReset: false });
+        } else {
           setShowLeftFade(true);
           setShowRightFade(true);
-        });
+        }
       });
-    }
+    });
   };
 
   const handleScroll = () => {
     const viewport = scrollerRef.current;
     if (!viewport) return;
     if (expansionPhaseRef.current === 'opening') return;
-    if (!isProgrammaticRef.current && viewport.scrollLeft > LEFT_FADE_THRESHOLD) {
-      userInteractedRef.current = true;
-      hasDepartedStartRef.current = true;
-      if (!hasDepartedStart) setHasDepartedStart(true);
-      if (initialFadesRef.current) initialFadesRef.current = false;
+    if (!isProgrammaticRef.current && viewport.scrollLeft > LEFT_FADE_THRESHOLD && initialFadesRef.current) {
+      initialFadesRef.current = false;
     }
     updateFadeState(viewport, {
       allowCollapse: !isProgrammaticRef.current,
@@ -179,12 +148,21 @@ export default function RelatedCompanies() {
     const nextLeft = Math.min(maxScroll, Math.max(0, viewport.scrollLeft + event.deltaY));
     if (nextLeft === viewport.scrollLeft) return;
     viewport.scrollLeft = nextLeft;
-    if (nextLeft > LEFT_FADE_THRESHOLD) {
-      userInteractedRef.current = true;
-      hasDepartedStartRef.current = true;
-      if (!hasDepartedStart) setHasDepartedStart(true);
-      if (initialFadesRef.current) initialFadesRef.current = false;
+    if (nextLeft > LEFT_FADE_THRESHOLD && initialFadesRef.current) {
+      initialFadesRef.current = false;
     }
+    updateFadeState(viewport, {
+      allowCollapse: !isProgrammaticRef.current,
+      allowFadeReset: !isProgrammaticRef.current,
+    });
+  };
+
+  const handleToggleClick = () => {
+    if (isExpanded) {
+      collapseToPreview();
+      return;
+    }
+    openAll();
   };
 
   return (
@@ -198,8 +176,8 @@ export default function RelatedCompanies() {
         </span>
       </header>
 
-      <div className="job-search-companies__stage">
-        <div className="job-search-companies__grid" aria-hidden={isExpanded}>
+      <div id="job-search-companies-content" className="job-search-companies__body">
+        <div className="job-search-companies__preview" aria-hidden={isExpanded}>
           {previewCompanies.map((company, index) => (
             <article key={`${company.name}-${index}`} className="job-search-companies__card">
               <div className="job-search-companies__thumb">
@@ -207,16 +185,6 @@ export default function RelatedCompanies() {
                   <img src={company.imageSrc} alt="" width={183} height={102} />
                   <span aria-hidden="true" className="job-search-companies__thumb-overlay" />
                 </div>
-                {!isExpanded && index === previewCompanies.length - 1 && (
-                  <button
-                    type="button"
-                    className="job-search-results__quick-action"
-                    aria-label="Show all related companies"
-                    onClick={handleToggle}
-                  >
-                    <span className="job-search-icon job-search-icon--add" aria-hidden="true" />
-                  </button>
-                )}
               </div>
               <p className="job-search-companies__name">{company.name}</p>
             </article>
@@ -231,7 +199,7 @@ export default function RelatedCompanies() {
         >
           <div
             ref={scrollerRef}
-            className={['job-search-companies__scroller-viewport'].join(' ')}
+            className="job-search-companies__scroller-viewport"
             role="list"
             onScroll={handleScroll}
             onWheel={handleWheel}
@@ -244,16 +212,6 @@ export default function RelatedCompanies() {
                       <img src={company.imageSrc} alt="" width={183} height={102} />
                       <span aria-hidden="true" className="job-search-companies__thumb-overlay" />
                     </div>
-                    {isExpanded && isAtStart && hasDepartedStart && index === 0 && (
-                      <button
-                        type="button"
-                        className="job-search-results__quick-action"
-                        aria-label="Collapse related companies"
-                        onClick={collapseToPreview}
-                      >
-                        <span className="job-search-icon job-search-icon--add" aria-hidden="true" />
-                      </button>
-                    )}
                   </div>
                   <p className="job-search-companies__name">{company.name}</p>
                 </article>
@@ -261,6 +219,17 @@ export default function RelatedCompanies() {
             </div>
           </div>
         </div>
+
+        <button
+          type="button"
+          className={`job-search-companies__toggle${isExpanded ? ' is-active' : ''}`}
+          aria-expanded={isExpanded}
+          aria-controls="job-search-companies-content"
+          onClick={handleToggleClick}
+        >
+          <span className="sr-only">{isExpanded ? 'Collapse related companies' : 'Show all related companies'}</span>
+          <span aria-hidden="true" className="job-search-companies__toggle-icon job-search-icon job-search-icon--add" />
+        </button>
       </div>
     </section>
   );
