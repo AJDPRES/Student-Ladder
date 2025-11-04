@@ -6,3 +6,4 @@ dev.db
 *.log
 .vercel
 .env*.local
+prisma/.env
