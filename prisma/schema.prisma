@@ -1,0 +1,220 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+enum JobType {
+  WORK_EXPERIENCE
+  APPRENTICESHIP
+  INTERNSHIP
+  PLACEMENT
+  GRADUATE_SCHEME
+}
+
+enum JobStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum JobKind {
+  SCHEME
+  LIVE
+}
+
+enum UserRole {
+  STUDENT
+  EMPLOYER
+  ADMIN
+}
+
+model Deck {
+  id         String   @id @default(cuid())
+  name       String
+  notes      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pairs      Pair[]
+  sessions   StudySession[]
+}
+
+model Pair {
+  id           String        @id @default(cuid())
+  deckId       String
+  deck         Deck          @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  question     String
+  answer       String
+  importance   Int           @default(0)
+  group        String? // carries through from Genius "group"
+  type         String? // carries through from Genius "type"
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  // One directional association per pair (Question -> Answer)
+  associations Association[]
+}
+
+model Association {
+  id        String    @id @default(cuid())
+  pairId    String
+  pair      Pair      @relation(fields: [pairId], references: [id], onDelete: Cascade)
+  direction String
+  score     Int?
+  dueAt     DateTime?
+  firstTime Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([pairId, direction])
+  @@index([dueAt])
+}
+
+model StudySession {
+  id        String       @id @default(cuid())
+  deckId    String
+  deck      Deck         @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  startedAt DateTime     @default(now())
+  endedAt   DateTime?
+  events    StudyEvent[]
+}
+
+model StudyEvent {
+  id            String       @id @default(cuid())
+  sessionId     String
+  session       StudySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  associationId String?
+  kind          String // "present" | "reveal" | "submit" | "mark"
+  detail        String? // JSON detail
+  at            DateTime     @default(now())
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String?
+  gradYear      Int?
+  degree        String?
+  location      String?
+  newsletter    Boolean   @default(false)
+  role          UserRole  @default(STUDENT)
+  createdAt     DateTime @default(now())
+  updatedAt    DateTime @updatedAt @default(now())
+  isAdmin       Boolean   @default(false)
+  accounts      Account[]
+  sessions      Session[]
+  decks         Deck[]
+  employer      Employer?
+  jobSaves      JobSave[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  oauth_token_secret String?
+  oauth_token       String?
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expires      DateTime
+}
+
+model Company {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  website   String?
+  logoUrl   String?
+  verified  Boolean  @default(false)
+  jobs      Job[]
+  managers  Employer[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Employer {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model Job {
+  id         String    @id @default(cuid())
+  slug       String
+  title      String
+  type       JobType
+  kind       JobKind   @default(SCHEME)
+  status     JobStatus @default(PUBLISHED)
+  companyId  String
+  company    Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  description String?
+  applyUrl   String
+  locations  String[]
+  sectors    String[]
+  tags       String[]
+  salaryMin  Int?
+  salaryMax  Int?
+  currency   String?
+  deadline   DateTime?
+  postedAt   DateTime  @default(now())
+  sponsored  Boolean   @default(false)
+  verified   Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  saves      JobSave[]
+
+  @@unique([type, slug], name: "uniq_editorial_job")
+  @@unique([companyId, type, slug], name: "uniq_company_job")
+  @@index([status, postedAt])
+  @@index([verified])
+}
+
+model JobSave {
+  userId    String
+  jobId     String
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job       Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, jobId])
+  @@index([createdAt])
+}
+
+model VerificationToken {
+  id         String   @id @default(cuid())
+  identifier String
+  tokenHash  String   @unique
+  purpose    String
+  expires    DateTime
+  createdAt  DateTime @default(now())
+
+  @@index([identifier])
+  @@index([expires])
+}

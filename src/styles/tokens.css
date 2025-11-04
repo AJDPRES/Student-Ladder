@@ -1,0 +1,35 @@
+:root {
+  /* Layout */
+  --container-w: 1077px;
+
+  /* Surfaces & borders */
+  --surface: #ffffff;
+  --surface-95: rgba(255, 255, 255, 0.95);
+  --stroke-soft-200: #e2e4e9;
+
+  /* Fonts */
+  --font-title: var(--font-ny, "New York Medium", ui-serif, "Times New Roman", serif);
+  --font-body: var(--font-inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial);
+
+  /* Palette */
+  --bg-header: #0a66ff;
+  --bg-white-0: #ffffff;
+  --bg-topbar: rgba(31, 32, 34, 0.5);
+  --text-primary: #0a0d14;
+  --text-secondary: #475569;
+  --text-ink-950: #0a0d14;
+  --icon-muted: #525866;
+  --avatar-tan: #fbdfb1;
+  --accent-alert: #df1c41;
+
+  /* Shadows */
+  --shadow-xsm: 0 1px 2px 0 rgba(228, 229, 231, 0.24);
+  --shadow-md: 0 16px 32px -12px rgba(88, 92, 95, 0.1);
+
+  /* Effects */
+  --ring-search-focus: rgba(226, 228, 233, 0.4);
+  --ring-focus: rgba(226, 228, 233, 0.4);
+
+  /* Page backgrounds */
+  --page-bg-job-search: #f6f5f4;
+}

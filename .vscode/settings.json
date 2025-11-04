@@ -1,0 +1,15 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" },
+  "files.eol": "\n",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "files.exclude": { "**/.next": true, "**/node_modules": true },
+  "tailwindCSS.includeLanguages": { "typescriptreact": "html" },
+  "tailwindCSS.experimental.classRegex": [
+    ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^'\"`]*)(?:'|\"|`)"]
+  ],
+  "terminal.integrated.defaultProfile.osx": "zsh (login)",
+  "terminal.integrated.profiles.osx": { "zsh (login)": { "path": "zsh", "args": ["-l"] } },
+  "terminal.integrated.inheritEnv": true
+}

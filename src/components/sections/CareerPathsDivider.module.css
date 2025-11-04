@@ -1,0 +1,22 @@
+.wrapper {
+  margin-top: 16px;
+  padding: 16px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 32px;
+  border-top: 1px solid #e2e4e9;
+  border-bottom: 1px solid #e2e4e9;
+  background: #ffffff;
+  width: 100%;
+}
+
+.label {
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4285714286;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #525866;
+}
