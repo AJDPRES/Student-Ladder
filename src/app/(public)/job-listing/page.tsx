@@ -80,9 +80,9 @@ export default function JobListingPrototypePage() {
               <span className="job-detail-topbar__name">Sophia</span>
               <img src="/icons/arrow-down-s-fill.svg" alt="" width={20} height={20} aria-hidden="true" />
             </button>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
 
       <header className="job-detail-hero" aria-label="Job header" />
 
