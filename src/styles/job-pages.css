@@ -11,6 +11,11 @@
   --job-muted-strong: #1f2937;
   --job-accent: #0a66ff;
   --job-accent-soft: rgba(10, 102, 255, 0.12);
+  --job-layout-width: 1076px;
+  --job-filter-width: 257px;
+  --job-results-width: 803px;
+  --job-column-gap: 16px;
+  --job-shell-padding: 32px;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -29,6 +34,20 @@
   width: min(100%, calc(var(--container-w, 1077px) + 96px));
   margin: 0 auto;
   padding: 0 32px;
+}
+
+.job-search-shell--header {
+  width: min(100%, var(--container-w, 1076px));
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.job-search-shell--search {
+  width: min(100%, var(--container-w, 1076px));
+  padding-left: 0;
+  padding-right: 0;
+  display: flex;
+  justify-content: flex-start;
 }
 
 @media (max-width: 1024px) {
@@ -179,6 +198,7 @@
   align-items: center;
   width: 217.7px;
   flex-shrink: 0;
+  gap: 32px;
 }
 
 .job-search-header__actions {
@@ -284,51 +304,94 @@
 .job-search-main {
   position: relative;
   z-index: 2;
-  padding-top: calc(0.5 * var(--job-search-searchbox-height, 68px) + 16px);
+  padding-top: 0;
+  background: transparent;
 }
 
 .job-search-panel {
   display: flex;
   flex-direction: column;
-  flex: 0 0 803px;
   width: 100%;
-  max-width: 803px;
   background: #ffffff;
-  padding: 32px 0 32px;
-  border-left: 1px solid #e2e4e9;
-  border-right: 1px solid #e2e4e9;
+  padding: calc(var(--job-search-searchbox-height, 68px)) 0 32px;
+  border: 1px solid #e2e4e9;
 }
 
 .job-search-layout {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: var(--job-filter-width, 257px) var(--job-results-width, 803px);
+  column-gap: var(--job-column-gap, 16px);
+  align-items: start;
   padding: 0 0 16px;
   width: 100%;
-  max-width: 1076px;
+  max-width: var(--job-layout-width, 1076px);
   margin: 0 auto;
+  background: transparent;
+  position: relative;
+}
+
+.job-search-layout.job-search-shell {
+  background: linear-gradient(
+    to right,
+    #f6f5f4 0,
+    #f6f5f4 calc(var(--job-shell-padding, 32px) + var(--job-filter-width, 257px) + var(--job-column-gap, 16px)),
+    #ffffff calc(var(--job-shell-padding, 32px) + var(--job-filter-width, 257px) + var(--job-column-gap, 16px)),
+    #ffffff 100%
+  );
+}
+
+.job-search-surface {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+}
+
+.job-search-surface--filter {
+  grid-column: 1;
+  background: #f6f5f4;
+}
+
+.job-search-surface--results {
+  grid-column: 2;
+  background: #ffffff;
+}
+
+.job-search-surface--results::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 100%;
+  width: calc(
+    (100vw - min(100vw, calc(var(--job-layout-width, 1076px) + 2 * var(--job-shell-padding, 32px)))) / 2
+    + var(--job-shell-padding, 32px)
+  );
+  background: #ffffff;
+  z-index: -1;
 }
 
 @media (max-width: 1040px) {
   .job-search-layout {
-    flex-direction: column;
-    gap: 24px;
+    grid-template-columns: 1fr;
+    row-gap: 24px;
+    column-gap: 0;
+    background: #f6f5f4;
     padding: 0 0 16px;
   }
+  .job-search-layout.job-search-shell {
+    background: #f6f5f4;
+  }
   .job-search-filter {
-    flex: 1 1 auto;
     position: static;
     top: auto;
-  }
-  .job-search-filter__frame {
     width: 100%;
+    max-width: none;
+  }
+  .job-search-surface--results::after {
+    display: none;
   }
   .job-search-panel {
-    flex: 1 1 auto;
-    max-width: none;
-    border-left: 0;
-    border-right: 0;
-    padding: 32px 0 24px;
+    padding: calc(var(--job-search-searchbox-height, 68px)) 0 24px;
   }
   .job-search-results {
     padding: 0 16px;
@@ -336,17 +399,22 @@
 }
 
 .job-search-filter {
-  flex: 0 0 257px;
   position: sticky;
-  top: 16px;
-  align-self: flex-start;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--job-filter-width, 257px);
+  background: #f6f5f4;
+  align-self: start;
 }
 
 .job-search-filter__frame {
   display: flex;
   flex-direction: column;
-  width: 257px;
-  gap: 16px;
+  width: 100%;
+  gap: 0;
+  padding: calc(var(--job-search-searchbox-height, 68px)) 0 32px;
 }
 
 .job-search-filter__heading {
@@ -374,13 +442,14 @@
   height: 1px;
   width: 100%;
   background: #e2e4e9;
-  margin-top: 16px;
+  margin: 8px 0 0;
 }
 
 .job-search-filter__sections {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-top: 16px;
 }
 
 .job-search-filter-section {
@@ -428,8 +497,8 @@
   justify-content: center;
   align-items: center;
   gap: 4px;
-  padding: 10px;
-  min-height: 40px;
+  padding: 10px 10px;
+  min-height: 60px;
   border-radius: 6px;
   border: 1px solid #e2e4e9;
   background: #ffffff;
@@ -440,7 +509,12 @@
   letter-spacing: -0.006em;
   color: #525866;
   flex: 1 1 0;
+  min-width: 0;
   cursor: pointer;
+}
+
+.job-search-filter__chip span {
+  max-width: 100%;
 }
 
 .job-search-filter__chip--accent {
@@ -452,12 +526,15 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  align-items: center;
+  width: 100%;
 }
 
 .job-search-filter__tag-field {
   display: flex;
   align-items: center;
   width: 100%;
+  gap: 8px;
   padding: 8px 8px 8px 10px;
   border-radius: 8px;
   border: 1px solid #e2e4e9;
@@ -486,6 +563,8 @@
   flex-wrap: wrap;
   gap: 8px;
   padding-top: 4px;
+  align-items: center;
+  width: 100%;
 }
 
 .job-search-filter__tag {
@@ -496,32 +575,44 @@
   border-radius: 6px;
   border: 1px solid #e2e4e9;
   background: #ffffff;
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: -0.006em;
-  color: #525866;
 }
 
 .job-search-filter__tag-dismiss {
   appearance: none;
   border: 0;
-  background: #f0f0f0;
-  color: #525866;
-  width: 12px;
-  height: 12px;
-  border-radius: 6px;
+  background: transparent;
+  color: #868c98;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
-  line-height: 1;
+  padding: 1px;
+  border-radius: 999px;
   cursor: pointer;
 }
 
 .job-search-filter__tag-dismiss:focus-visible {
   outline: 2px solid #4357d2;
   outline-offset: 1px;
+}
+
+.job-search-filter__tag-dismiss-icon {
+  display: inline-flex;
+  width: 12px;
+  height: 12px;
+}
+
+.job-search-filter__tag-dismiss-icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.job-search-filter__tag-label {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3333333333;
+  color: #525866;
 }
 
 .job-search-filter__dropdown {
@@ -580,8 +671,7 @@
   display: flex;
   width: 100%;
   align-items: stretch;
-  padding: 16px;
-  margin: 0 0 10px;
+  margin: 0;
 }
 
 .job-search-results__toolbar-inner {
@@ -590,6 +680,7 @@
   justify-content: space-between;
   gap: 50px;
   width: 100%;
+  padding: 16px;
   flex-wrap: wrap;
 }
 
@@ -597,8 +688,8 @@
 .job-search-results__toolbar::after {
   content: "";
   position: absolute;
-  left: 16px;
-  right: 16px;
+  left: 0;
+  right: 0;
   height: 1px;
   background: #e2e4e9;
 }
@@ -612,7 +703,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 8px 8px 10px;
+  padding: 0 12px;
+  height: 36px;
   border-radius: 8px;
   border: 1px solid #e2e4e9;
   background: #ffffff;
@@ -620,7 +712,7 @@
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 14px;
   font-weight: 400;
-  line-height: 20px;
+  line-height: 36px;
   color: #0a0d14;
   cursor: pointer;
 }
@@ -648,32 +740,37 @@
   gap: 16px;
   padding: 16px 24px;
   background: #ffffff;
-  position: relative;
+  border-bottom: 1px solid #e2e4e9;
+  min-height: 202px;
 }
 
-.job-card__inner::after {
-  content: "";
-  position: absolute;
-  left: 24px;
-  right: 24px;
-  bottom: 0;
-  height: 1px;
-  background: #e2e4e9;
+.job-card:hover .job-card__inner,
+.job-card:focus-within .job-card__inner {
+  background: #f6f8fa;
 }
 
 .job-card__media {
   flex: 0 0 138px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: stretch;
+  border: 2px solid #ebf1ff;
+  background: #ebf1ff;
+  border-radius: 8px;
+  height: 116px;
+  box-sizing: border-box;
 }
 
 .job-card__media-surface {
+  display: flex;
+  align-items: stretch;
   border-radius: 8px 8px 0 0;
-  border: 2px solid #ebf1ff;
   background: #ffffff;
   box-shadow: 0px 1px 2px 0px rgba(228, 229, 231, 0.24);
   overflow: hidden;
+  height: 102px;
+  width: 100%;
 }
 
 .job-card__media-surface img {
@@ -687,16 +784,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 4px 8px;
+  gap: 2px;
+  padding: 2px 8px 2px 4px;
   border-radius: 0 0 8px 8px;
-  background: #c2d6ff;
+  background: #ebf1ff;
   color: #162664;
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.02em;
   text-transform: uppercase;
+  line-height: 1.0909090909;
+  width: 100%;
+}
+
+.job-card__media-badge--hidden {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .job-card__media-badge-icon {
@@ -715,26 +819,15 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  min-height: 0;
+  min-width: 0;
 }
 
 .job-card__header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 4px;
-}
-
-.job-card__heading {
-  display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.job-card__title-group {
-  display: flex;
-  align-items: center;
-  gap: 16px;
+  gap: 4px;
+  margin-bottom: 16px;
 }
 
 .job-card__title {
@@ -744,11 +837,29 @@
   font-weight: 500;
   line-height: 1.6;
   color: #0a0d14;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .job-card__title a {
   color: inherit;
   text-decoration: none;
+}
+
+.job-card:hover .job-card__title,
+.job-card:focus-within .job-card__title,
+.job-card:hover .job-card__title a,
+.job-card:focus-within .job-card__title a {
+  color: #162664;
+}
+
+.job-card:hover .job-card__title a:hover,
+.job-card:hover .job-card__title a:focus-visible,
+.job-card:focus-within .job-card__title a:hover,
+.job-card:focus-within .job-card__title a:focus-visible {
+  color: #162664;
+  outline: none;
 }
 
 .job-card__title a:hover,
@@ -798,17 +909,29 @@
 }
 
 .job-card__description {
-  margin: 0;
+  margin: 0 0 16px;
   font-size: 14px;
   line-height: 1.4285714286;
   color: #525866;
+  max-width: 528px;
+  flex: 1 1 auto;
 }
 
-.job-card__footer {
+.job-card__meta {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: flex-end;
-  gap: 12px;
+  justify-content: space-between;
+  gap: 16px;
+  flex: 0 0 auto;
+  min-width: 120px;
+}
+
+.job-card__status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
 }
 
 .job-card__tags {
@@ -820,14 +943,20 @@
 .job-card__tag {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   padding: 4px 8px 4px 4px;
   border-radius: 6px;
   background: #f6f8fa;
   color: #525866;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: -0.006em;
+  line-height: 1.3333333333;
+}
+
+.job-card:hover .job-card__tag,
+.job-card:focus-within .job-card__tag {
+  background: #ffffff;
 }
 
 .job-card__tag-icon {
@@ -842,6 +971,7 @@
   font-size: 12px;
   line-height: 1.3333333333;
   color: #525866;
+  text-align: right;
 }
 
 .job-search__pagination {
@@ -907,6 +1037,7 @@
 }
 
 .job-search-view-switch {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -914,6 +1045,27 @@
   height: 36px;
   border-radius: 6px;
   background: #f6f8fa;
+}
+
+.job-search-view-switch__thumb {
+  position: absolute;
+  inset: 2px;
+  width: calc((100% - 8px) / 2);
+  border-radius: 6px;
+  background: #ffffff;
+  box-shadow: 0 0 0 1px #e2e4e9, 0px 2px 4px 0px rgba(27, 28, 29, 0.04);
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.job-search-view-switch--grid .job-search-view-switch__thumb {
+  transform: translateX(calc(100% + 4px));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .job-search-view-switch__thumb {
+    transition: none;
+  }
 }
 
 .job-search-view-switch__option {
@@ -929,14 +1081,22 @@
   background: transparent;
   color: #868c98;
   cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .job-search-view-switch__option:last-child { gap: 6px; }
 
 .job-search-view-switch__option.is-active {
-  background: #ffffff;
   color: #0a0d14;
-  box-shadow: 0 0 0 1px #e2e4e9, 0px 2px 4px 0px rgba(27, 28, 29, 0.04);
+  gap: 6px;
+}
+
+.job-search-view-switch__option:focus-visible {
+  outline: 2px solid #4357d2;
+  outline-offset: 2px;
 }
 
 .job-search-view-switch__icon {

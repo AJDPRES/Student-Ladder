@@ -8,7 +8,8 @@ export default function ViewSwitch() {
   const [active, setActive] = useState<View>('grid');
 
   return (
-    <div className="job-search-view-switch" role="tablist" aria-label="View mode">
+    <div className={`job-search-view-switch job-search-view-switch--${active}`} role="tablist" aria-label="View mode">
+      <span className="job-search-view-switch__thumb" aria-hidden="true" />
       <button
         type="button"
         className={`job-search-view-switch__option${active === 'list' ? ' is-active' : ''}`}

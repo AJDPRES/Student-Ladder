@@ -2,6 +2,16 @@ Always request MCP data deep enough to reach every rendered layer (minimum depth
 
 Before locking layout widths, multiply the recorded card width and gaps by the per-row count and confirm the total fits inside the container’s inner width (after padding); adjust sizes or container width immediately if it doesn’t.
 
+Spacing & Verification Discipline:
+- Before editing, record the auto-layout chain (parent → child) for the target frame, including each frame’s gap and padding values. Log those numbers in your notes so you can re-check them later.
+- When adjusting layout spacing, confirm the rendered spacing (via computed styles or math) still matches the MCP values immediately after the change. If any value deviates, iterate before moving on.
+- When a design requires a deliberate deviation from the MCP (for example, overriding a component size), document the reason and the new value in your response so the divergence is explicit.
+
+Styling Fidelity:
+- Before editing, pull the MCP data for the specific component layer and capture fills, padding, radii, shadows, and any other visual tokens before touching the code.
+- When adding animation or interaction, layer it on top of the recorded styling—only adjust transform/opacity/transition properties; leave the base visuals identical to the MCP spec.
+- After the change, inspect the rendered styles against the logged values to confirm the canonical look stayed intact; fix any drift immediately.
+
 Follow This Prompt Exactly: Follow This Prompt Exactly: Before finishing the code, always go through this prompt line by line to ensure it has been implemented—then in your response confirm “Prompt Implemented” only after you answer the hard-check below.
 
 1. MCP Refresh

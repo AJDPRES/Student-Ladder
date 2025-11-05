@@ -85,7 +85,7 @@ export default async function JobSearchPage({ searchParams }: { searchParams: Re
       <div className="job-search-hero">
         <header className="job-search-header" aria-label="Job search header">
           <div className="job-search-header__surface" aria-hidden="true" />
-          <div className="job-search-header__topbar job-search-shell" role="navigation" aria-label="Topbar">
+          <div className="job-search-header__topbar job-search-shell job-search-shell--header" role="navigation" aria-label="Topbar">
             <div className="job-search-header__frame">
               <div className="job-search-header__group-2089">
                 <div className="job-search-header__group-2006">
@@ -146,7 +146,7 @@ export default async function JobSearchPage({ searchParams }: { searchParams: Re
           </div>
         </header>
         <div className="job-search-searchbox">
-          <div className="job-search-shell">
+          <div className="job-search-shell job-search-shell--search">
             <SearchBox align="left" />
           </div>
         </div>
@@ -154,189 +154,187 @@ export default async function JobSearchPage({ searchParams }: { searchParams: Re
 
       <main className="job-search-main">
         <div className="job-search-layout job-search-shell">
-          <aside className="job-search-filter" aria-label="Filters">
-            <div className="job-search-filter__frame">
-              <div className="job-search-filter__heading">
-                <span className="job-search-filter__heading-icon" aria-hidden="true">
-                  <img src="/images/job-search/icons/filter-3-line.svg" alt="" width={20} height={20} />
-                </span>
-                <span className="job-search-filter__heading-label">Filter</span>
-              </div>
-              <div className="job-search-filter__divider" aria-hidden="true" />
-              <div className="job-search-filter__sections">
-                <section className="job-search-filter-section job-search-filter-section--type">
-                  <header className="job-search-filter-section__title">
-                    <span className="job-search-filter-section__icon" aria-hidden="true">
-                      <img src="/images/job-search/icons/apps-2-line.svg" alt="" width={20} height={20} />
-                    </span>
-                    <span className="job-search-filter-section__label">Job Type</span>
-                  </header>
-                  <div className="job-search-filter__chip-rows" role="group" aria-label="Job type options">
-                    <div className="job-search-filter__chip-row">
-                      <button type="button" className="job-search-filter__chip">
-                        <span>All</span>
-                      </button>
-                      <button type="button" className="job-search-filter__chip">
-                        <span>Experience</span>
-                      </button>
+          <aside className="job-search-surface job-search-surface--filter" aria-label="Filters">
+            <div className="job-search-filter">
+              <div className="job-search-filter__frame">
+                <div className="job-search-filter__heading">
+                  <span className="job-search-filter__heading-icon" aria-hidden="true">
+                    <img src="/images/job-search/icons/filter-3-line.svg" alt="" width={20} height={20} />
+                  </span>
+                  <span className="job-search-filter__heading-label">Filter</span>
+                </div>
+                <div className="job-search-filter__divider" aria-hidden="true" />
+                <div className="job-search-filter__sections">
+                  <section className="job-search-filter-section job-search-filter-section--type">
+                    <header className="job-search-filter-section__title">
+                      <span className="job-search-filter-section__icon" aria-hidden="true">
+                        <img src="/images/job-search/icons/apps-2-line.svg" alt="" width={20} height={20} />
+                      </span>
+                      <span className="job-search-filter-section__label">Job Type</span>
+                    </header>
+                    <div className="job-search-filter__chip-rows" role="group" aria-label="Job type options">
+                      <div className="job-search-filter__chip-row">
+                        <button type="button" className="job-search-filter__chip">
+                          <span>All</span>
+                        </button>
+                        <button type="button" className="job-search-filter__chip">
+                          <span>Experience</span>
+                        </button>
+                      </div>
+                      <div className="job-search-filter__chip-row">
+                        <button type="button" className="job-search-filter__chip job-search-filter__chip--accent">
+                          <span>Apprenticeship</span>
+                        </button>
+                        <button type="button" className="job-search-filter__chip">
+                          <span>Internship</span>
+                        </button>
+                      </div>
+                      <div className="job-search-filter__chip-row">
+                        <button type="button" className="job-search-filter__chip">
+                          <span>Placement</span>
+                        </button>
+                        <button type="button" className="job-search-filter__chip">
+                          <span>Graduate</span>
+                        </button>
+                      </div>
                     </div>
-                    <div className="job-search-filter__chip-row">
-                      <button
-                        type="button"
-                        className="job-search-filter__chip job-search-filter__chip--accent"
-                      >
-                        <span>Apprenticeship</span>
-                      </button>
-                      <button type="button" className="job-search-filter__chip">
-                        <span>Internship</span>
-                      </button>
-                    </div>
-                    <div className="job-search-filter__chip-row">
-                      <button type="button" className="job-search-filter__chip">
-                        <span>Placement</span>
-                      </button>
-                      <button type="button" className="job-search-filter__chip">
-                        <span>Graduate</span>
-                      </button>
-                    </div>
-                  </div>
-                </section>
+                  </section>
 
-                <section className="job-search-filter-section job-search-filter-section--career">
-                  <header className="job-search-filter-section__title">
-                    <span className="job-search-filter-section__icon" aria-hidden="true">
-                      <img src="/images/job-search/icons/archive-2-line.svg" alt="" width={20} height={20} />
-                    </span>
-                    <span className="job-search-filter-section__label">Career Path</span>
-                  </header>
-                  <div className="job-search-filter__tag-stack">
-                    <label className="job-search-filter__tag-field">
-                      <span className="sr-only">Add career paths</span>
-                      <input placeholder="Add career paths..." />
-                    </label>
-                    <div className="job-search-filter__tags">
-                      <span className="job-search-filter__tag">
-                        <span className="job-search-filter__tag-label">Accounting</span>
-                        <button type="button" className="job-search-filter__tag-dismiss" aria-label="Remove Accounting">
-                          <span aria-hidden="true">×</span>
-                        </button>
+                  <section className="job-search-filter-section job-search-filter-section--career">
+                    <header className="job-search-filter-section__title">
+                      <span className="job-search-filter-section__icon" aria-hidden="true">
+                        <img src="/images/job-search/icons/archive-line.svg" alt="" width={20} height={20} />
                       </span>
-                      <span className="job-search-filter__tag">
-                        <span className="job-search-filter__tag-label">Finance</span>
-                        <button type="button" className="job-search-filter__tag-dismiss" aria-label="Remove Finance">
-                          <span aria-hidden="true">×</span>
-                        </button>
-                      </span>
-                      <span className="job-search-filter__tag">
-                        <span className="job-search-filter__tag-label">Investment Banking</span>
-                        <button type="button" className="job-search-filter__tag-dismiss" aria-label="Remove Investment Banking">
-                          <span aria-hidden="true">×</span>
-                        </button>
-                      </span>
+                      <span className="job-search-filter-section__label">Career Path</span>
+                    </header>
+                    <div className="job-search-filter__tag-stack">
+                      <label className="job-search-filter__tag-field">
+                        <span className="sr-only">Add career paths</span>
+                        <input type="text" placeholder="Add career paths..." />
+                      </label>
+                      <div className="job-search-filter__tags">
+                        <span className="job-search-filter__tag">
+                          <span className="job-search-filter__tag-label">Accounting</span>
+                          <button type="button" className="job-search-filter__tag-dismiss" aria-label="Remove Accounting">
+                            <span className="job-search-filter__tag-dismiss-icon" aria-hidden="true">
+                              <img src="/images/job-search/icons/close-line.svg" alt="" width={12} height={12} />
+                            </span>
+                          </button>
+                        </span>
+                        <span className="job-search-filter__tag">
+                          <span className="job-search-filter__tag-label">Finance</span>
+                          <button type="button" className="job-search-filter__tag-dismiss" aria-label="Remove Finance">
+                            <span className="job-search-filter__tag-dismiss-icon" aria-hidden="true">
+                              <img src="/images/job-search/icons/close-line.svg" alt="" width={12} height={12} />
+                            </span>
+                          </button>
+                        </span>
+                        <span className="job-search-filter__tag">
+                          <span className="job-search-filter__tag-label">Investment Banking</span>
+                          <button
+                            type="button"
+                            className="job-search-filter__tag-dismiss"
+                            aria-label="Remove Investment Banking"
+                          >
+                            <span className="job-search-filter__tag-dismiss-icon" aria-hidden="true">
+                              <img src="/images/job-search/icons/close-line.svg" alt="" width={12} height={12} />
+                            </span>
+                          </button>
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </section>
+                  </section>
 
-                <section className="job-search-filter-section job-search-filter-section--location">
-                  <header className="job-search-filter-section__title">
-                    <span className="job-search-filter-section__icon" aria-hidden="true">
-                      <img src="/images/job-search/icons/map-pin-line.svg" alt="" width={20} height={20} />
-                    </span>
-                    <span className="job-search-filter-section__label">Location</span>
-                  </header>
-                  <button type="button" className="job-search-filter__dropdown" aria-haspopup="listbox">
-                    <span className="job-search-filter__dropdown-flag" aria-hidden="true">
-                      <img src="/images/job-search/icons/flag-united-kingdom.svg" alt="" width={20} height={20} />
-                    </span>
-                    <span className="job-search-filter__dropdown-value">London</span>
-                    <span className="job-search-filter__dropdown-caret" aria-hidden="true">
-                      <img src="/images/job-search/icons/arrow-down-s-line.svg" alt="" width={20} height={20} />
-                    </span>
-                  </button>
-                </section>
+                  <section className="job-search-filter-section job-search-filter-section--location">
+                    <header className="job-search-filter-section__title">
+                      <span className="job-search-filter-section__icon" aria-hidden="true">
+                        <img src="/images/job-search/icons/map-pin-line.svg" alt="" width={20} height={20} />
+                      </span>
+                      <span className="job-search-filter-section__label">Location</span>
+                    </header>
+                    <button type="button" className="job-search-filter__dropdown" aria-haspopup="listbox">
+                      <span className="job-search-filter__dropdown-flag" aria-hidden="true">
+                        <img src="/images/job-search/icons/flag-united-kingdom.svg" alt="" width={20} height={20} />
+                      </span>
+                      <span className="job-search-filter__dropdown-value">London</span>
+                      <span className="job-search-filter__dropdown-caret" aria-hidden="true">
+                        <img src="/images/job-search/icons/arrow-down-s-line.svg" alt="" width={20} height={20} />
+                      </span>
+                    </button>
+                  </section>
+                </div>
               </div>
             </div>
           </aside>
 
-          <div className="job-search-panel">
-            <div className="job-search-results">
-              <RelatedCompanies />
+          <section className="job-search-surface job-search-surface--results" aria-label="Job results">
+            <div className="job-search-panel">
+              <div className="job-search-results">
+                <RelatedCompanies />
 
-              <section className="job-search-results__toolbar" aria-label="Result controls">
-                <div className="job-search-results__toolbar-inner">
-                  <ViewSwitch />
-                  <button type="button" className="job-search-sort" aria-haspopup="listbox">
-                    <span className="job-search-sort__icon" aria-hidden="true">
-                      <img src="/images/job-search/icons/sort-desc.svg" alt="" width={20} height={20} />
-                    </span>
-                    <span className="job-search-sort__label">Sort by</span>
-                    <span className="job-search-sort__chevron" aria-hidden="true">
-                      <img src="/images/job-search/icons/arrow-down-s-line.svg" alt="" width={20} height={20} />
-                    </span>
-                  </button>
-                </div>
-              </section>
+                <section className="job-search-results__toolbar" aria-label="Result controls">
+                  <div className="job-search-results__toolbar-inner">
+                    <ViewSwitch />
+                    <button type="button" className="job-search-sort" aria-haspopup="listbox">
+                      <span className="job-search-sort__icon" aria-hidden="true">
+                        <img src="/images/job-search/icons/sort-desc.svg" alt="" width={20} height={20} />
+                      </span>
+                      <span className="job-search-sort__label">Sort by</span>
+                      <span className="job-search-sort__chevron" aria-hidden="true">
+                        <img src="/images/job-search/icons/arrow-down-s-line.svg" alt="" width={20} height={20} />
+                      </span>
+                    </button>
+                  </div>
+                </section>
 
-              <ul className="job-search-results-list">
-                {enrichedResults.map((job, index) => {
-                  const key = `${job.id}-${index}`;
-                  const href = jobCanonicalPath({
-                    slug: job.slug,
-                    type: job.type,
-                    sponsored: job.sponsored,
-                    company: job.company ? { slug: job.company.slug } : undefined,
-                  });
-                  const companyName = job.company?.name ?? "Independent";
-                  const locationLabel = job.locations?.join(", ") ?? "United Kingdom";
-                  const jobTypeText = jobTypeLabel(job.type);
-                  const jobKindLabel = job.kind === "SCHEME" ? "Scheme" : "Live";
-                  const secondaryTag = job.sectors[0] ?? job.tags[0] ?? companyName;
-                  return (
-                    <li key={key} className="job-card">
-                      <article className="job-card__inner">
-                        <div className="job-card__media">
-                          <img
-                            className="job-card__media-image"
-                            src="/images/job-search/cards/job-card-hero.png"
-                            alt=""
-                            width={138}
-                            height={102}
-                          />
-                          {job.verified ? (
-                            <div className="job-card__media-badge">
+                <ul className="job-search-results-list">
+                  {enrichedResults.map((job, index) => {
+                    const key = `${job.id}-${index}`;
+                    const href = jobCanonicalPath({
+                      slug: job.slug,
+                      type: job.type,
+                      sponsored: job.sponsored,
+                      company: job.company ? { slug: job.company.slug } : undefined,
+                    });
+                    const companyName = job.company?.name ?? "Independent";
+                    const locationLabel = job.locations?.join(", ") ?? "United Kingdom";
+                    const jobTypeText = jobTypeLabel(job.type);
+                    const jobKindLabel = job.kind === "SCHEME" ? "Scheme" : "Live";
+                    const secondaryTag = job.sectors[0] ?? job.tags[0] ?? companyName;
+                    return (
+                      <li key={key} className="job-card">
+                        <article className="job-card__inner">
+                          <div className="job-card__media">
+                            <div className="job-card__media-surface">
+                              <img
+                                className="job-card__media-image"
+                                src="/images/job-search/cards/company-logo-box.png"
+                                alt=""
+                                width={138}
+                                height={102}
+                              />
+                            </div>
+                            <div
+                              className={`job-card__media-badge${job.verified ? "" : " job-card__media-badge--hidden"}`}
+                              aria-hidden={!job.verified}
+                            >
                               <span aria-hidden="true" className="job-card__media-badge-icon">
                                 <span className="job-search-icon job-search-icon--verified job-search-icon--12" />
                               </span>
                               <span className="job-card__media-badge-label">verified</span>
                             </div>
-                          ) : null}
-                        </div>
+                          </div>
 
-                        <div className="job-card__content">
-                          <header className="job-card__header">
-                            <div className="job-card__heading">
-                              <div className="job-card__title-group">
-                                <h2 className="job-card__title">
-                                  <Link href={href}>{job.title}</Link>
-                                </h2>
-                                <span className="job-card__pill">
-                                  <span aria-hidden="true" className="job-card__pill-icon">
-                                    <span className="job-search-icon job-search-icon--flashlight job-search-icon--16" />
-                                  </span>
-                                  <span>{jobKindLabel}</span>
-                                </span>
-                              </div>
+                          <div className="job-card__content">
+                            <header className="job-card__header">
+                              <h2 className="job-card__title">
+                                <Link href={href}>{job.title}</Link>
+                              </h2>
                               <p className="job-card__company">{companyName}</p>
-                            </div>
+                            </header>
 
-                            <button type="button" className="job-card__save" aria-label="Save job">
-                              <span className="job-search-icon job-search-icon--star" aria-hidden="true" />
-                            </button>
-                          </header>
+                            <p className="job-card__description">{job.summary}</p>
 
-                          <p className="job-card__description">{job.summary}</p>
-
-                          <footer className="job-card__footer">
                             <div className="job-card__tags">
                               <span className="job-card__tag">
                                 <span aria-hidden="true" className="job-card__tag-icon">
@@ -357,21 +355,35 @@ export default async function JobSearchPage({ searchParams }: { searchParams: Re
                                 <span>{locationLabel}</span>
                               </span>
                             </div>
-                            <span className="job-card__date">Posted 2 weeks ago</span>
-                          </footer>
-                        </div>
-                      </article>
-                    </li>
-                  );
-                })}
-              </ul>
+                          </div>
 
-              <div className="job-search__pagination">
-                {results.page > 1 && <Link href={buildUrl(results.page - 1)}>Previous</Link>}
-                {results.page < results.pages && <Link href={buildUrl(results.page + 1)}>Next</Link>}
+                          <aside className="job-card__meta">
+                            <button type="button" className="job-card__save" aria-label="Save job">
+                              <span className="job-search-icon job-search-icon--star" aria-hidden="true" />
+                            </button>
+                            <div className="job-card__status">
+                              <span className="job-card__pill">
+                                <span aria-hidden="true" className="job-card__pill-icon">
+                                  <span className="job-search-icon job-search-icon--flashlight job-search-icon--16" />
+                                </span>
+                                <span>{jobKindLabel}</span>
+                              </span>
+                              <span className="job-card__date">Posted 2 weeks ago</span>
+                            </div>
+                          </aside>
+                        </article>
+                      </li>
+                    );
+                  })}
+                </ul>
+
+                <div className="job-search__pagination">
+                  {results.page > 1 && <Link href={buildUrl(results.page - 1)}>Previous</Link>}
+                  {results.page < results.pages && <Link href={buildUrl(results.page + 1)}>Next</Link>}
+                </div>
               </div>
             </div>
-          </div>
+          </section>
         </div>
       </main>
     </>
