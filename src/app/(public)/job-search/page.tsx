@@ -327,9 +327,7 @@ export default async function JobSearchPage({ searchParams }: { searchParams: Re
 
                           <div className="job-card__content">
                             <header className="job-card__header">
-                              <h2 className="job-card__title">
-                                <Link href={href}>{job.title}</Link>
-                              </h2>
+                              <h2 className="job-card__title">{job.title}</h2>
                               <p className="job-card__company">{companyName}</p>
                             </header>
 
@@ -358,9 +356,15 @@ export default async function JobSearchPage({ searchParams }: { searchParams: Re
                           </div>
 
                           <aside className="job-card__meta">
-                            <button type="button" className="job-card__save" aria-label="Save job">
+                            <a
+                              href="https://www.google.com"
+                              className="job-card__save"
+                              aria-label="Save job"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
                               <span className="job-search-icon job-search-icon--star" aria-hidden="true" />
-                            </button>
+                            </a>
                             <div className="job-card__status">
                               <span className="job-card__pill">
                                 <span aria-hidden="true" className="job-card__pill-icon">
@@ -371,13 +375,17 @@ export default async function JobSearchPage({ searchParams }: { searchParams: Re
                               <span className="job-card__date">Posted 2 weeks ago</span>
                             </div>
                           </aside>
+
+                          <Link href={href} className="job-card__overlay" aria-label={`View ${job.title}`}>
+                            <span aria-hidden="true" />
+                          </Link>
                         </article>
                       </li>
                     );
                   })}
                 </ul>
 
-                <div className="job-search__pagination">
+              <div className="job-search__pagination">
                   {results.page > 1 && <Link href={buildUrl(results.page - 1)}>Previous</Link>}
                   {results.page < results.pages && <Link href={buildUrl(results.page + 1)}>Next</Link>}
                 </div>
