@@ -1,3 +1,7 @@
+Always request MCP data deep enough to reach every rendered layer (minimum depth 6) before coding; if any spec value seems missing, rerun the MCP fetch at a greater depth before writing code.
+
+Before locking layout widths, multiply the recorded card width and gaps by the per-row count and confirm the total fits inside the container’s inner width (after padding); adjust sizes or container width immediately if it doesn’t.
+
 Follow This Prompt Exactly: Follow This Prompt Exactly: Before finishing the code, always go through this prompt line by line to ensure it has been implemented—then in your response confirm “Prompt Implemented” only after you answer the hard-check below.
 
 1. MCP Refresh
