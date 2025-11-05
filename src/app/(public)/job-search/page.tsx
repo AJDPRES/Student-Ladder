@@ -263,16 +263,18 @@ export default async function JobSearchPage({ searchParams }: { searchParams: Re
               <RelatedCompanies />
 
               <section className="job-search-results__toolbar" aria-label="Result controls">
-                <ViewSwitch />
-                <button type="button" className="job-search-sort" aria-haspopup="listbox">
-                  <span className="job-search-sort__icon" aria-hidden="true">
-                    <span className="job-search-icon job-search-icon--sort" />
-                  </span>
-                  <span className="job-search-sort__label">Sort by</span>
-                  <span className="job-search-sort__chevron" aria-hidden="true">
-                    <span className="job-search-icon job-search-icon--chevron" />
-                  </span>
-                </button>
+                <div className="job-search-results__toolbar-inner">
+                  <ViewSwitch />
+                  <button type="button" className="job-search-sort" aria-haspopup="listbox">
+                    <span className="job-search-sort__icon" aria-hidden="true">
+                      <img src="/images/job-search/icons/sort-desc.svg" alt="" width={20} height={20} />
+                    </span>
+                    <span className="job-search-sort__label">Sort by</span>
+                    <span className="job-search-sort__chevron" aria-hidden="true">
+                      <img src="/images/job-search/icons/arrow-down-s-line.svg" alt="" width={20} height={20} />
+                    </span>
+                  </button>
+                </div>
               </section>
 
               <ul className="job-search-results-list">
@@ -287,19 +289,27 @@ export default async function JobSearchPage({ searchParams }: { searchParams: Re
                   const companyName = job.company?.name ?? "Independent";
                   const locationLabel = job.locations?.join(", ") ?? "United Kingdom";
                   const jobTypeText = jobTypeLabel(job.type);
+                  const jobKindLabel = job.kind === "SCHEME" ? "Scheme" : "Live";
+                  const secondaryTag = job.sectors[0] ?? job.tags[0] ?? companyName;
                   return (
                     <li key={key} className="job-card">
                       <article className="job-card__inner">
                         <div className="job-card__media">
-                          <div className="job-card__media-surface">
-                            <img src="/images/job-search/cards/job-card-hero.png" alt="" width={138} height={102} />
-                          </div>
-                          <div className="job-card__media-badge">
-                            <span aria-hidden="true" className="job-card__media-badge-icon">
-                              <span className="job-search-icon job-search-icon--verified job-search-icon--12" />
-                            </span>
-                            <span className="job-card__media-badge-label">verified</span>
-                          </div>
+                          <img
+                            className="job-card__media-image"
+                            src="/images/job-search/cards/job-card-hero.png"
+                            alt=""
+                            width={138}
+                            height={102}
+                          />
+                          {job.verified ? (
+                            <div className="job-card__media-badge">
+                              <span aria-hidden="true" className="job-card__media-badge-icon">
+                                <span className="job-search-icon job-search-icon--verified job-search-icon--12" />
+                              </span>
+                              <span className="job-card__media-badge-label">verified</span>
+                            </div>
+                          ) : null}
                         </div>
 
                         <div className="job-card__content">
@@ -313,7 +323,7 @@ export default async function JobSearchPage({ searchParams }: { searchParams: Re
                                   <span aria-hidden="true" className="job-card__pill-icon">
                                     <span className="job-search-icon job-search-icon--flashlight job-search-icon--16" />
                                   </span>
-                                  <span>{jobTypeText}</span>
+                                  <span>{jobKindLabel}</span>
                                 </span>
                               </div>
                               <p className="job-card__company">{companyName}</p>
@@ -324,9 +334,7 @@ export default async function JobSearchPage({ searchParams }: { searchParams: Re
                             </button>
                           </header>
 
-                          <p className="job-card__description">
-                            Job description for the job listing one, containing some brief snippet information, and for the job listing one. Either comes from job listing one. Description for the job listing one, containing some brief snippet information, and for the job listing one. Either comes from job listing one.
-                          </p>
+                          <p className="job-card__description">{job.summary}</p>
 
                           <footer className="job-card__footer">
                             <div className="job-card__tags">
@@ -340,7 +348,7 @@ export default async function JobSearchPage({ searchParams }: { searchParams: Re
                                 <span aria-hidden="true" className="job-card__tag-icon">
                                   <span className="job-search-icon job-search-icon--archive job-search-icon--16" />
                                 </span>
-                                <span>{companyName}</span>
+                                <span>{secondaryTag}</span>
                               </span>
                               <span className="job-card__tag">
                                 <span aria-hidden="true" className="job-card__tag-icon">

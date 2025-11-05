@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useRef, useState, type WheelEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type WheelEvent } from 'react';
 
 type Company = {
   name: string;
@@ -26,144 +26,146 @@ const COMPANY_CARDS: Company[] = [
 ];
 
 const GRID_PREVIEW_COUNT = 4;
-const SCROLLER_TARGET_COUNT = 15;
-const LEFT_FADE_THRESHOLD = 12;
-const RIGHT_FADE_THRESHOLD = 16;
+const LEFT_THRESHOLD = 32;
+const RIGHT_THRESHOLD = 32;
 
 export default function RelatedCompanies() {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef({ active: false, startX: 0, scrollLeft: 0 });
   const [isExpanded, setIsExpanded] = useState(false);
   const [showLeftFade, setShowLeftFade] = useState(false);
   const [showRightFade, setShowRightFade] = useState(false);
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const isProgrammaticRef = useRef(false);
-  const expansionPhaseRef = useRef<'preview' | 'opening' | 'open'>('preview');
-  const initialFadesRef = useRef(false);
 
-  const previewCompanies = COMPANY_CARDS.slice(0, GRID_PREVIEW_COUNT);
-  const scrollerCompanies = useMemo(() => {
-    if (COMPANY_CARDS.length >= SCROLLER_TARGET_COUNT) return COMPANY_CARDS.slice(0, SCROLLER_TARGET_COUNT);
-    return Array.from({ length: SCROLLER_TARGET_COUNT }, (_, index) => COMPANY_CARDS[index % COMPANY_CARDS.length]);
+  const previewCompanies = useMemo(() => COMPANY_CARDS.slice(0, GRID_PREVIEW_COUNT), []);
+  const scrollerCompanies = useMemo(() => COMPANY_CARDS.slice(), []);
+
+  const updateFades = useCallback((viewport: HTMLDivElement) => {
+    const maxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+    const atStart = viewport.scrollLeft <= LEFT_THRESHOLD;
+    const atEnd = maxScroll - viewport.scrollLeft <= RIGHT_THRESHOLD;
+    const hasOverflow = maxScroll > 0;
+
+    setShowLeftFade(hasOverflow && !atStart);
+    setShowRightFade(hasOverflow && !atEnd);
   }, []);
 
-  const collapseToPreview = useCallback(() => {
-    setIsExpanded(false);
-    setShowLeftFade(false);
-    setShowRightFade(false);
-    expansionPhaseRef.current = 'preview';
-    initialFadesRef.current = false;
-    const viewport = scrollerRef.current;
-    if (!viewport) return;
-    isProgrammaticRef.current = true;
-    viewport.scrollTo({ left: 0, behavior: 'auto' });
-    requestAnimationFrame(() => {
-      isProgrammaticRef.current = false;
-    });
-  }, []);
-
-  const updateFadeState = useCallback(
-    (
-      viewport: HTMLDivElement,
-      {
-        allowCollapse: _allowCollapse = true,
-        allowFadeReset: _allowFadeReset = true,
-      }: { allowCollapse?: boolean; allowFadeReset?: boolean } = {}
-    ) => {
-      if (expansionPhaseRef.current === 'opening') {
-        return;
-      }
-
-      const maxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
-      const remaining = maxScroll - viewport.scrollLeft;
-      const atStart = viewport.scrollLeft <= LEFT_FADE_THRESHOLD;
-      const atEnd = remaining <= RIGHT_FADE_THRESHOLD;
-      const hasOverflow = maxScroll > 0;
-
-      if (atStart) {
-        setShowLeftFade(hasOverflow && viewport.scrollLeft > 0);
-        setShowRightFade(hasOverflow);
-        if (initialFadesRef.current) initialFadesRef.current = false;
-        return;
-      }
-
-      setShowLeftFade(true);
-      setShowRightFade(!atEnd);
-      if (initialFadesRef.current) initialFadesRef.current = false;
-    },
-    [collapseToPreview]
-  );
-
-  const openAll = () => {
-    if (isExpanded) {
+  useEffect(() => {
+    if (!isExpanded) {
+      setShowLeftFade(false);
+      setShowRightFade(false);
       return;
     }
 
-    setIsExpanded(true);
-    // Start with fades off, then fade them in after the scroller begins its own fade-in
-    setShowLeftFade(false);
-    setShowRightFade(false);
-    expansionPhaseRef.current = 'open';
-    initialFadesRef.current = true;
-    // Let the scroller mount and begin opacity transition, then fade in the sides
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        const viewport = scrollerRef.current;
-        if (viewport) {
-          viewport.scrollTo({ left: 0, behavior: 'auto' });
-          updateFadeState(viewport, { allowCollapse: false, allowFadeReset: false });
-        } else {
-          setShowLeftFade(true);
-          setShowRightFade(true);
-        }
-      });
-    });
-  };
-
-  const handleScroll = () => {
     const viewport = scrollerRef.current;
     if (!viewport) return;
-    if (expansionPhaseRef.current === 'opening') return;
-    if (!isProgrammaticRef.current && viewport.scrollLeft > LEFT_FADE_THRESHOLD && initialFadesRef.current) {
-      initialFadesRef.current = false;
-    }
-    updateFadeState(viewport, {
-      allowCollapse: !isProgrammaticRef.current,
-      allowFadeReset: !isProgrammaticRef.current,
+
+    viewport.scrollLeft = 0;
+    setShowLeftFade(false);
+    setShowRightFade(false);
+
+    requestAnimationFrame(() => {
+      const current = scrollerRef.current;
+      if (!current) return;
+      updateFades(current);
     });
+  }, [isExpanded, updateFades]);
+
+  useEffect(() => {
+    if (!isExpanded) return;
+    const viewport = scrollerRef.current;
+    if (!viewport) return;
+
+    const handleResize = () => {
+      const current = scrollerRef.current;
+      if (!current) return;
+      updateFades(current);
+    };
+
+    const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(handleResize) : null;
+    observer?.observe(viewport);
+
+    handleResize();
+
+    return () => {
+      observer?.disconnect();
+    };
+  }, [isExpanded, updateFades]);
+
+  const handleScroll = () => {
+    if (!isExpanded) return;
+    const viewport = scrollerRef.current;
+    if (!viewport) return;
+    updateFades(viewport);
   };
 
   const handleWheel = (event: WheelEvent<HTMLDivElement>) => {
+    if (!isExpanded) return;
+    if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+
     const viewport = scrollerRef.current;
     if (!viewport) return;
 
-    if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) {
-      return;
-    }
-
     const maxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
-    if (maxScroll === 0) {
-      return;
-    }
+    if (maxScroll === 0) return;
 
     event.preventDefault();
     const nextLeft = Math.min(maxScroll, Math.max(0, viewport.scrollLeft + event.deltaY));
     if (nextLeft === viewport.scrollLeft) return;
+
     viewport.scrollLeft = nextLeft;
-    if (nextLeft > LEFT_FADE_THRESHOLD && initialFadesRef.current) {
-      initialFadesRef.current = false;
-    }
-    updateFadeState(viewport, {
-      allowCollapse: !isProgrammaticRef.current,
-      allowFadeReset: !isProgrammaticRef.current,
-    });
+    updateFades(viewport);
   };
 
-  const handleToggleClick = () => {
-    if (isExpanded) {
-      collapseToPreview();
-      return;
-    }
-    openAll();
+  const handlePointerDown: React.PointerEventHandler<HTMLDivElement> = (event) => {
+    if (!isExpanded) return;
+    if (event.pointerType === 'touch') return;
+    const viewport = scrollerRef.current;
+    if (!viewport) return;
+    dragRef.current = { active: true, startX: event.clientX, scrollLeft: viewport.scrollLeft };
+    viewport.setPointerCapture(event.pointerId);
   };
+
+  const handlePointerMove: React.PointerEventHandler<HTMLDivElement> = (event) => {
+    if (!isExpanded) return;
+    const viewport = scrollerRef.current;
+    if (!viewport) return;
+    const drag = dragRef.current;
+    if (!drag.active) return;
+
+    const delta = drag.startX - event.clientX;
+    const maxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+    const nextLeft = Math.min(maxScroll, Math.max(0, drag.scrollLeft + delta));
+    if (viewport.scrollLeft === nextLeft) return;
+
+    viewport.scrollLeft = nextLeft;
+    updateFades(viewport);
+  };
+
+  const endDrag: React.PointerEventHandler<HTMLDivElement> = (event) => {
+    if (!isExpanded) return;
+    const viewport = scrollerRef.current;
+    if (!viewport) return;
+    const drag = dragRef.current;
+    if (!drag.active) return;
+
+    dragRef.current = { active: false, startX: 0, scrollLeft: viewport.scrollLeft };
+    if (viewport.hasPointerCapture(event.pointerId)) {
+      viewport.releasePointerCapture(event.pointerId);
+    }
+  };
+
+  const handleActivate = () => {
+    if (isExpanded) return;
+    setIsExpanded(true);
+  };
+
+  const scrollerClassName = [
+    'job-search-companies__scroller',
+    showLeftFade ? 'is-scrollable-left' : '',
+    showRightFade ? 'is-scrollable-right' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <section
@@ -176,60 +178,57 @@ export default function RelatedCompanies() {
         </span>
       </header>
 
-      <div id="job-search-companies-content" className="job-search-companies__body">
-        <div className="job-search-companies__preview" aria-hidden={isExpanded}>
+      <div className="job-search-companies__body">
+        <div className="job-search-companies__grid" aria-hidden={isExpanded}>
           {previewCompanies.map((company, index) => (
-            <article key={`${company.name}-${index}`} className="job-search-companies__card">
+            <article key={`preview-${index}-${company.name}`} className="job-search-companies__card">
               <div className="job-search-companies__thumb">
                 <div className="job-search-companies__thumb-inner">
                   <img src={company.imageSrc} alt="" width={183} height={102} />
                   <span aria-hidden="true" className="job-search-companies__thumb-overlay" />
                 </div>
+                {!isExpanded && index === previewCompanies.length - 1 && (
+                  <button
+                    type="button"
+                    className="job-search-companies__expand"
+                    aria-label="Show all related companies"
+                    onClick={handleActivate}
+                  >
+                    <span className="job-search-companies__expand-icon" aria-hidden="true" />
+                  </button>
+                )}
               </div>
               <p className="job-search-companies__name">{company.name}</p>
             </article>
           ))}
         </div>
 
-        <div
-          className={`job-search-companies__scroller${
-            showLeftFade ? ' is-scrollable-left' : ''
-          }${showRightFade ? ' is-scrollable-right' : ''}`}
-          aria-hidden={!isExpanded}
-        >
+        <div className={scrollerClassName} aria-hidden={!isExpanded}>
           <div
             ref={scrollerRef}
-            className="job-search-companies__scroller-viewport"
+            className="job-search-companies__viewport"
             role="list"
             onScroll={handleScroll}
             onWheel={handleWheel}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={endDrag}
+            onPointerLeave={endDrag}
+            onPointerCancel={endDrag}
           >
-            <div className="job-search-companies__scroller-track">
-              {scrollerCompanies.map((company, index) => (
-                <article key={`scroller-${index}-${company.name}`} className="job-search-companies__card" role="listitem">
-                  <div className="job-search-companies__thumb">
-                    <div className="job-search-companies__thumb-inner">
-                      <img src={company.imageSrc} alt="" width={183} height={102} />
-                      <span aria-hidden="true" className="job-search-companies__thumb-overlay" />
-                    </div>
+            {scrollerCompanies.map((company, index) => (
+              <article key={`company-${index}-${company.name}`} className="job-search-companies__card" role="listitem">
+                <div className="job-search-companies__thumb">
+                  <div className="job-search-companies__thumb-inner">
+                    <img src={company.imageSrc} alt="" width={183} height={102} />
+                    <span aria-hidden="true" className="job-search-companies__thumb-overlay" />
                   </div>
-                  <p className="job-search-companies__name">{company.name}</p>
-                </article>
-              ))}
-            </div>
+                </div>
+                <p className="job-search-companies__name">{company.name}</p>
+              </article>
+            ))}
           </div>
         </div>
-
-        <button
-          type="button"
-          className={`job-search-companies__toggle${isExpanded ? ' is-active' : ''}`}
-          aria-expanded={isExpanded}
-          aria-controls="job-search-companies-content"
-          onClick={handleToggleClick}
-        >
-          <span className="sr-only">{isExpanded ? 'Collapse related companies' : 'Show all related companies'}</span>
-          <span aria-hidden="true" className="job-search-companies__toggle-icon job-search-icon job-search-icon--add" />
-        </button>
       </div>
     </section>
   );
