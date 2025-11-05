@@ -283,7 +283,7 @@
   display: grid;
   grid-template-columns: var(--job-filter-width, 257px) var(--job-results-width, 803px);
   column-gap: var(--job-column-gap, 16px);
-  align-items: start;
+  align-items: stretch;
   padding: 0 0 16px;
   width: 100%;
   max-width: var(--job-layout-width, 1076px);
@@ -308,7 +308,11 @@
 .job-search-surface--filter {
   grid-column: 1;
   background: #f6f5f4;
-  padding-top: calc(var(--job-search-searchbox-height, 68px));
+}
+.job-search-surface--filter::before {
+  content: "";
+  display: block;
+  height: calc(var(--job-search-searchbox-height, 68px));
 }
 .job-search-surface--results {
   grid-column: 2;
@@ -348,6 +352,9 @@
   .job-search-filter__frame {
     position: static;
     top: auto;
+  }
+  .job-search-surface--filter::before {
+    height: 0;
   }
   .job-search-surface--results::after {
     display: none;

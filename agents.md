@@ -2,6 +2,9 @@ Always request MCP data deep enough to reach every rendered layer (minimum depth
 
 Before locking layout widths, multiply the recorded card width and gaps by the per-row count and confirm the total fits inside the container’s inner width (after padding); adjust sizes or container width immediately if it doesn’t.
 
+Communication Principle:
+- Anchor every layout discussion in the explicit parent → child frame chain, noting which wrapper owns each padding, gap, and constraint so implementation and debugging stay aligned.
+
 Spacing & Verification Discipline:
 - Before editing, record the auto-layout chain (parent → child) for the target frame, including each frame’s gap and padding values. Log those numbers in your notes so you can re-check them later.
 - When adjusting layout spacing, confirm the rendered spacing (via computed styles or math) still matches the MCP values immediately after the change. If any value deviates, iterate before moving on.
