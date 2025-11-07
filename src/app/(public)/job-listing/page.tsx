@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Fragment } from 'react';
 
 export const dynamic = 'force-static';
 
@@ -239,60 +240,65 @@ export default function JobListingPrototypePage() {
               </div>
 
               <section className="job-related" aria-labelledby="job-related-heading">
+                <div className="job-related__header" id="job-related-heading">
+                  <span className="job-related__label">related jobs</span>
+                </div>
                 <div className="job-related__frame">
-                  <div className="job-related__header" id="job-related-heading">
-                    <span className="job-related__line" aria-hidden="true" />
-                    <span className="job-related__label">RELATED JOBS</span>
-                    <span className="job-related__line" aria-hidden="true" />
-                  </div>
                   <div className="job-related__cards" role="list">
                     {RELATED_JOBS.map((job, index) => (
-                      <article key={job.id} className="job-related-card" role="listitem">
-                        <div className="job-related-card__row">
-                          <div className="job-related-card__media-group">
-                            <div className="job-related-card__media">
-                              <img
-                                src={job.image.src}
-                                alt="Company preview"
-                                width={job.image.width}
-                                height={job.image.height}
-                                loading={index ? 'lazy' : 'eager'}
-                              />
+                      <Fragment key={job.id}>
+                        <article className="job-related-card" role="listitem">
+                          <div className="job-related-card__content">
+                            <div className="job-related-card__row">
+                              <div className="job-card__media">
+                                <div className="job-card__media-surface">
+                                  <img
+                                    className="job-card__media-image"
+                                    src="/images/job-search/cards/company-logo-box.png"
+                                    alt=""
+                                    width={138}
+                                    height={102}
+                                    loading={index ? 'lazy' : 'eager'}
+                                  />
+                                </div>
+                                <div className="job-card__media-badge">
+                                  <span aria-hidden="true" className="job-card__media-badge-icon">
+                                    <span className="job-search-icon job-search-icon--verified job-search-icon--12" />
+                                  </span>
+                                  <span className="job-card__media-badge-label">verified</span>
+                                </div>
+                              </div>
+                              <button type="button" className="job-related-card__action" aria-label="Save job">
+                                <span className="job-search-icon job-search-icon--star" aria-hidden="true" />
+                              </button>
                             </div>
-                            <span className="job-related-card__media-badge">
-                              <img src="/icons/verified-line.svg" alt="" width={12} height={12} aria-hidden="true" />
-                              <span>verified</span>
-                            </span>
-                          </div>
-                          <button type="button" className="job-related-card__action" aria-label="Save job">
-                            <img src={RELATED_JOB_ACTION} alt="" width={40} height={36} loading="lazy" />
-                          </button>
-                        </div>
-                        <div className="job-related-card__body">
-                          <div className="job-related-card__title-row">
-                            <h3 className="job-related-card__title">{job.title}</h3>
-                            <span className="job-related-card__status">
-                              <img src={job.statusIcon} alt="" width={16} height={16} aria-hidden="true" />
-                              <span>{job.status}</span>
-                            </span>
-                          </div>
-                          <span className="job-related-card__company">{job.company}</span>
-                        </div>
-                        <div className="job-related-card__footer">
-                          <div className="job-related-card__tags" role="list">
-                            {job.tags.map((tag) => (
-                              <span key={`${job.id}-${tag.id}`} className="job-related-card__tag" role="listitem">
-                                <span className="job-related-card__tag-icon" aria-hidden="true">
-                                  <img src={tag.icon} alt="" width={16} height={16} />
+                            <div className="job-related-card__body">
+                              <div className="job-related-card__title-row">
+                                <h3 className="job-related-card__title">{job.title}</h3>
+                                <span className="job-related-card__status">
+                                  <img src={job.statusIcon} alt="" width={16} height={16} aria-hidden="true" />
+                                  <span>{job.status}</span>
                                 </span>
-                                <span>{tag.label}</span>
-                              </span>
-                            ))}
+                              </div>
+                              <span className="job-related-card__company">{job.company}</span>
+                            </div>
+                            <div className="job-related-card__footer">
+                              <div className="job-related-card__tags" role="list">
+                                {job.tags.map((tag) => (
+                                  <span key={`${job.id}-${tag.id}`} className="job-related-card__tag" role="listitem">
+                                    <span className="job-related-card__tag-icon" aria-hidden="true">
+                                      <img src={tag.icon} alt="" width={16} height={16} />
+                                    </span>
+                                    <span>{tag.label}</span>
+                                  </span>
+                                ))}
+                              </div>
+                              <span className="job-related-card__posted">{job.posted}</span>
+                            </div>
                           </div>
-                          <span className="job-related-card__posted">{job.posted}</span>
-                        </div>
-                        {index < RELATED_JOBS.length - 1 && <span className="job-related-card__divider" aria-hidden="true" />}
-                      </article>
+                        </article>
+                        {index < RELATED_JOBS.length - 1 && <span className="job-related__cards-divider" aria-hidden="true" />}
+                      </Fragment>
                     ))}
                   </div>
                 </div>
