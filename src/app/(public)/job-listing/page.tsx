@@ -132,63 +132,56 @@ export default function JobListingPrototypePage() {
         </div>
       </div>
 
+      <div className="job-detail-hero" aria-hidden="true" />
+
+      <section className="job-detail-banner" aria-label="Job scheme banner">
+        <div className="job-detail-alert" role="status">
+          <span className="job-detail-alert__icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" focusable="false" aria-hidden="true">
+              <path
+                d="M20.1 19.2H21.9V21H2.10001V19.2H3.90001V3.9C3.90001 3.66131 3.99483 3.43239 4.16361 3.2636C4.33239 3.09482 4.56131 3 4.80001 3H19.2C19.4387 3 19.6676 3.09482 19.8364 3.2636C20.0052 3.43239 20.1 3.66131 20.1 3.9V19.2ZM18.3 19.2V4.8H5.70001V19.2H18.3ZM8.40001 11.1H11.1V12.9H8.40001V11.1ZM8.40001 7.5H11.1V9.3H8.40001V7.5ZM8.40001 14.7H11.1V16.5H8.40001V14.7ZM12.9 14.7H15.6V16.5H12.9V14.7ZM12.9 11.1H15.6V12.9H12.9V11.1ZM12.9 7.5H15.6V9.3H12.9V7.5Z"
+                fill="#F17B2C"
+              />
+            </svg>
+          </span>
+          <span className="job-detail-alert__text">Job scheme by Bank of America</span>
+        </div>
+      </section>
+
       <main className="job-detail-main">
         <div className="job-detail-body">
-          <div className="job-detail-alert" role="status">
-            <span className="job-detail-alert__icon" aria-hidden="true">
-              <img src="/icons/building-4-line.svg" alt="" width={20} height={20} />
-            </span>
-            <span className="job-detail-alert__text">Job scheme by Bank of America</span>
-          </div>
-
           <div className="job-detail-columns">
             <div className="job-detail-column job-detail-column--primary">
               <article className="job-overview">
-                <div className="job-overview__header">
-                  <h1 className="job-overview__title">{PRIMARY_JOB.title}</h1>
-                  <button type="button" className="job-overview__save">
-                    <span className="job-overview__save-icon" aria-hidden="true">
-                      <img src="/icons/star-smile-fill.svg" alt="" width={20} height={20} />
-                    </span>
-                    <span>Save Job</span>
-                  </button>
-                </div>
-                <div className="job-overview__content">
-                  <div className="job-overview__media">
-                    <img
-                      src={PRIMARY_JOB.image.src}
-                      alt="Bank of America office"
-                      width={PRIMARY_JOB.image.width}
-                      height={PRIMARY_JOB.image.height}
-                    />
-                    <span className="job-overview__media-badge">
-                      <img src="/icons/verified-line.svg" alt="" width={12} height={12} aria-hidden="true" />
-                      <span>verified</span>
-                    </span>
-                  </div>
-                  <div className="job-overview__info">
-                    <div className="job-overview__status">
-                      <span className="job-overview__status-icon" aria-hidden="true">
-                        <img src={PRIMARY_JOB.status.icon} alt="" width={16} height={16} />
+            <div className="job-overview__body" aria-live="polite">
+              <div className="job-overview__header">
+                <h1 className="job-overview__title">{PRIMARY_JOB.title}</h1>
+                <button type="button" className="job-overview__save">
+                  <span className="job-overview__save-icon" aria-hidden="true">
+                    <img src="/icons/star-smile-fill.svg" alt="" width={20} height={20} />
+                  </span>
+                  <span>Save Job</span>
+                </button>
+              </div>
+              <p className="job-overview__company">{PRIMARY_JOB.company}</p>
+              <div className="job-overview__meta-block" aria-label="Job meta">
+                <span className="job-overview__divider" aria-hidden="true" />
+                <div className="job-overview__meta">
+                  <div className="job-overview__tags" role="list">
+                    {PRIMARY_JOB.tags.map((tag) => (
+                      <span key={tag.id} className="job-tag" role="listitem">
+                        <span className="job-tag__icon" aria-hidden="true">
+                          <img src={tag.icon} alt="" width={16} height={16} />
+                        </span>
+                        <span>{tag.label}</span>
                       </span>
-                      <span className="job-overview__status-label">{PRIMARY_JOB.status.label}</span>
-                    </div>
-                    <p className="job-overview__company">{PRIMARY_JOB.company}</p>
-                    <div className="job-overview__meta">
-                      <div className="job-overview__tags" role="list">
-                        {PRIMARY_JOB.tags.map((tag) => (
-                          <span key={tag.id} className="job-tag" role="listitem">
-                            <span className="job-tag__icon" aria-hidden="true">
-                              <img src={tag.icon} alt="" width={16} height={16} />
-                            </span>
-                            <span>{tag.label}</span>
-                          </span>
-                        ))}
-                      </div>
-                      <span className="job-overview__posted">{PRIMARY_JOB.posted}</span>
-                    </div>
+                    ))}
                   </div>
+                  <span className="job-overview__posted">{PRIMARY_JOB.posted}</span>
                 </div>
+                <span className="job-overview__divider" aria-hidden="true" />
+              </div>
+            </div>
               </article>
 
               <article className="job-details" aria-label="Method & details">
@@ -306,14 +299,16 @@ export default function JobListingPrototypePage() {
 
             <aside className="job-detail-column job-detail-column--sidebar">
               <div className="job-sidebar">
-                <button type="button" className="job-sidebar__apply">
-                  <span className="job-sidebar__apply-icon" aria-hidden="true">
-                    <img src="/icons/arrow-right-up-line.svg" alt="" width={20} height={20} />
-                  </span>
-                  <span>Apply for Job</span>
-                </button>
+                <div className="job-sidebar__section job-sidebar__section--apply job-sidebar__section--divider">
+                  <button type="button" className="job-sidebar__apply">
+                    <span className="job-sidebar__apply-icon" aria-hidden="true">
+                      <img src="/icons/arrow-right-up-line.svg" alt="" width={20} height={20} />
+                    </span>
+                    <span>Apply for Job</span>
+                  </button>
+                </div>
 
-                <section className="job-sidebar__facts" aria-label="Job facts">
+                <section className="job-sidebar__section job-sidebar__section--divider job-sidebar__facts" aria-label="Job facts">
                   <ul className="job-sidebar__fact-list">
                     {SIDEBAR_FACTS.map((fact) => (
                       <li key={fact.id} className="job-sidebar__fact">
@@ -329,19 +324,21 @@ export default function JobListingPrototypePage() {
                   </ul>
                 </section>
 
-                <section className="job-sidebar__profile" aria-labelledby="job-sidebar-profile-title">
-                  <div className="job-sidebar__profile-visual">
-                    <img src="/images/job-sidebar/profile-card-artwork.png" alt="profile collage" width={255} height={102} />
-                    <span className="job-sidebar__profile-badge">
-                      <img src="/images/job-sidebar/profile-card-verified-icon.svg" alt="" width={12} height={12} aria-hidden="true" />
-                      <span>verified</span>
-                    </span>
-                  </div>
-                  <div className="job-sidebar__profile-copy">
-                    <p className="job-sidebar__profile-name">Bank of America</p>
-                    <p className="job-sidebar__profile-description">
-                      I'm a Product Designer based in Melbourne, Australia. I specialise in UX/UI design, brand strategy, and Webflow development.
-                    </p>
+                <section className="job-sidebar__section job-sidebar__profile" aria-labelledby="job-sidebar-profile-title">
+                  <div className="job-sidebar__profile-card">
+                    <div className="job-sidebar__profile-visual">
+                      <img src="/images/job-sidebar/profile-card-artwork.png" alt="profile collage" width={255} height={102} />
+                      <span className="job-sidebar__profile-badge">
+                        <img src="/images/job-sidebar/profile-card-verified-icon.svg" alt="" width={12} height={12} aria-hidden="true" />
+                        <span>verified</span>
+                      </span>
+                    </div>
+                    <div className="job-sidebar__profile-copy">
+                      <p className="job-sidebar__profile-name">Bank of America</p>
+                      <p className="job-sidebar__profile-description">
+                        I'm a Product Designer based in Melbourne, Australia. I specialise in UX/UI design, brand strategy, and Webflow development.
+                      </p>
+                    </div>
                   </div>
                   <div className="job-sidebar__profile-footer">
                     <span id="job-sidebar-profile-title" className="job-sidebar__profile-title">

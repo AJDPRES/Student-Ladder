@@ -7,3 +7,4 @@ dev.db
 .vercel
 .env*.local
 prisma/.env
+.codex/
