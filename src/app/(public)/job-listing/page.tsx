@@ -153,88 +153,90 @@ export default function JobListingPrototypePage() {
           <div className="job-detail-columns">
             <div className="job-detail-column job-detail-column--primary">
               <article className="job-overview">
-            <div className="job-overview__body" aria-live="polite">
-              <div className="job-overview__header">
-                <h1 className="job-overview__title">{PRIMARY_JOB.title}</h1>
-                <button type="button" className="job-overview__save">
-                  <span className="job-overview__save-icon" aria-hidden="true">
-                    <img src="/icons/star-smile-fill.svg" alt="" width={20} height={20} />
-                  </span>
-                  <span>Save Job</span>
-                </button>
-              </div>
-              <p className="job-overview__company">{PRIMARY_JOB.company}</p>
-              <div className="job-overview__meta-block" aria-label="Job meta">
-                <span className="job-overview__divider" aria-hidden="true" />
-                <div className="job-overview__meta">
-                  <div className="job-overview__tags" role="list">
-                    {PRIMARY_JOB.tags.map((tag) => (
-                      <span key={tag.id} className="job-tag" role="listitem">
-                        <span className="job-tag__icon" aria-hidden="true">
-                          <img src={tag.icon} alt="" width={16} height={16} />
-                        </span>
-                        <span>{tag.label}</span>
+                <div className="job-overview__body" aria-live="polite">
+                  <div className="job-overview__header">
+                    <h1 className="job-overview__title">{PRIMARY_JOB.title}</h1>
+                    <button type="button" className="job-overview__save">
+                      <span className="job-overview__save-icon" aria-hidden="true">
+                        <img src="/icons/star-smile-fill.svg" alt="" width={20} height={20} />
                       </span>
-                    ))}
+                      <span>Save Job</span>
+                    </button>
                   </div>
-                  <span className="job-overview__posted">{PRIMARY_JOB.posted}</span>
+                  <p className="job-overview__company">{PRIMARY_JOB.company}</p>
+                  <div className="job-overview__meta-block" aria-label="Job meta">
+                    <span className="job-overview__divider" aria-hidden="true" />
+                    <div className="job-overview__meta">
+                      <div className="job-overview__tags" role="list">
+                        {PRIMARY_JOB.tags.map((tag) => (
+                          <span key={tag.id} className="job-tag" role="listitem">
+                            <span className="job-tag__icon" aria-hidden="true">
+                              <img src={tag.icon} alt="" width={16} height={16} />
+                            </span>
+                            <span>{tag.label}</span>
+                          </span>
+                        ))}
+                      </div>
+                      <span className="job-overview__posted">{PRIMARY_JOB.posted}</span>
+                    </div>
+                    <span className="job-overview__divider" aria-hidden="true" />
+                  </div>
                 </div>
-                <span className="job-overview__divider" aria-hidden="true" />
-              </div>
-            </div>
               </article>
 
-              <article className="job-details" aria-label="Method & details">
-                <section className="job-details__section">
-                  <div className="job-details__divider">JOB DESCRIPTION</div>
-                  <div className="job-details__body job-details__body--description">
-                    <div className="job-details__copy">
-                      {JOB_DESCRIPTION_PARAGRAPHS.map((paragraph, index) => (
-                        <p key={`job-desc-${index}`}>{paragraph}</p>
+              <div className="job-details-wrapper">
+                <article className="job-details" aria-label="Method & details">
+                  <section className="job-details__section">
+                    <div className="job-details__divider">JOB DESCRIPTION</div>
+                    <div className="job-details__body job-details__body--description">
+                      <div className="job-details__copy">
+                        {JOB_DESCRIPTION_PARAGRAPHS.map((paragraph, index) => (
+                          <p key={`job-desc-${index}`}>{paragraph}</p>
+                        ))}
+                      </div>
+                      <div className="job-details__media">
+                        <img src="/images/job-detail/job-description-image.png" alt="Team working" width={437} height={179} />
+                      </div>
+                    </div>
+                  </section>
+
+                  <section className="job-details__section">
+                    <div className="job-details__divider">JOB REQUIREMENTS</div>
+                    <div className="job-details__body job-details__body--notes" role="list">
+                      {JOB_REQUIREMENTS.map((note) => (
+                        <div key={note.id} className="job-note" role="listitem">
+                          <span className="job-note__icon" aria-hidden="true">
+                            <img src="/icons/select-box-circle-fill.svg" alt="" width={20} height={20} />
+                          </span>
+                          <div className="job-note__content">
+                            <p className="job-note__title">{note.title}</p>
+                            <p className="job-note__description">{note.description}</p>
+                          </div>
+                          <span className="job-note__date">{note.date}</span>
+                        </div>
                       ))}
                     </div>
-                    <div className="job-details__media">
-                      <img src="/images/job-detail/job-description-image.png" alt="Team working" width={437} height={179} />
+                  </section>
+
+                  <section className="job-details__section">
+                    <div className="job-details__divider">JOB BENEFITS</div>
+                    <div className="job-details__body job-details__body--notes" role="list">
+                      {JOB_BENEFITS.map((note) => (
+                        <div key={note.id} className="job-note" role="listitem">
+                          <span className="job-note__icon" aria-hidden="true">
+                            <img src="/icons/select-box-circle-fill.svg" alt="" width={20} height={20} />
+                          </span>
+                          <div className="job-note__content">
+                            <p className="job-note__title">{note.title}</p>
+                            <p className="job-note__description">{note.description}</p>
+                          </div>
+                          <span className="job-note__date">{note.date}</span>
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                </section>
-
-                <section className="job-details__section">
-                  <div className="job-details__divider">JOB REQUIREMENTS</div>
-                  <div className="job-details__body job-details__body--notes" role="list">
-                    {JOB_REQUIREMENTS.map((note) => (
-                      <div key={note.id} className="job-note" role="listitem">
-                        <span className="job-note__icon" aria-hidden="true">
-                          <img src="/icons/select-box-circle-fill.svg" alt="" width={20} height={20} />
-                        </span>
-                        <div className="job-note__content">
-                          <p className="job-note__title">{note.title}</p>
-                          <p className="job-note__description">{note.description}</p>
-                        </div>
-                        <span className="job-note__date">{note.date}</span>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-
-                <section className="job-details__section">
-                  <div className="job-details__divider">JOB BENEFITS</div>
-                  <div className="job-details__body job-details__body--notes" role="list">
-                    {JOB_BENEFITS.map((note) => (
-                      <div key={note.id} className="job-note" role="listitem">
-                        <span className="job-note__icon" aria-hidden="true">
-                          <img src="/icons/select-box-circle-fill.svg" alt="" width={20} height={20} />
-                        </span>
-                        <div className="job-note__content">
-                          <p className="job-note__title">{note.title}</p>
-                          <p className="job-note__description">{note.description}</p>
-                        </div>
-                        <span className="job-note__date">{note.date}</span>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              </article>
+                  </section>
+                </article>
+              </div>
 
               <section className="job-related" aria-labelledby="job-related-heading">
                 <div className="job-related__frame">
