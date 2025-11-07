@@ -18,7 +18,14 @@ const PRIMARY_JOB = {
   image: { src: JOB_MEDIA, width: 138, height: 102 },
 };
 
-const JOB_REQUIREMENTS = [
+type JobNoteData = {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+};
+
+const JOB_REQUIREMENTS: JobNoteData[] = [
   {
     id: 'req-arthur-taylor',
     title: 'Meeting with Arthur Taylor',
@@ -27,7 +34,7 @@ const JOB_REQUIREMENTS = [
   },
 ];
 
-const JOB_BENEFITS = [
+const JOB_BENEFITS: JobNoteData[] = [
   {
     id: 'benefit-1',
     title: 'Meeting with Arthur Taylor',
@@ -87,6 +94,21 @@ const SIDEBAR_FACTS = [
   { id: 'salary', label: 'salary', value: 'Competitive Salary', icon: '/icons/money-pound-circle-line.svg' },
   { id: 'location', label: 'location', value: 'London, UK', icon: '/icons/global-line.svg' },
 ];
+
+function JobNoteRow({ note }: { note: JobNoteData }) {
+  return (
+    <div className="job-note" role="listitem">
+      <span className="job-note__icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" focusable="false" aria-hidden="true">
+          <path d="M12 21C7.0293 21 3 16.9707 3 12C3 7.0293 7.0293 3 12 3C16.9707 3 21 7.0293 21 12C21 16.9707 16.9707 21 12 21ZM11.1027 15.6L17.4657 9.2361L16.1931 7.9635L11.1027 13.0548L8.5566 10.5087L7.284 11.7813L11.1027 15.6Z" />
+        </svg>
+      </span>
+      <div className="job-note__content">
+        <p className="job-note__title">{note.title}</p>
+      </div>
+    </div>
+  );
+}
 
 export default function JobListingPrototypePage() {
   return (
@@ -205,16 +227,7 @@ export default function JobListingPrototypePage() {
                     <div className="job-details__divider">JOB REQUIREMENTS</div>
                     <div className="job-details__body job-details__body--notes" role="list">
                       {JOB_REQUIREMENTS.map((note) => (
-                        <div key={note.id} className="job-note" role="listitem">
-                          <span className="job-note__icon" aria-hidden="true">
-                            <img src="/icons/select-box-circle-fill.svg" alt="" width={20} height={20} />
-                          </span>
-                          <div className="job-note__content">
-                            <p className="job-note__title">{note.title}</p>
-                            <p className="job-note__description">{note.description}</p>
-                          </div>
-                          <span className="job-note__date">{note.date}</span>
-                        </div>
+                        <JobNoteRow key={note.id} note={note} />
                       ))}
                     </div>
                   </section>
@@ -223,16 +236,7 @@ export default function JobListingPrototypePage() {
                     <div className="job-details__divider">JOB BENEFITS</div>
                     <div className="job-details__body job-details__body--notes" role="list">
                       {JOB_BENEFITS.map((note) => (
-                        <div key={note.id} className="job-note" role="listitem">
-                          <span className="job-note__icon" aria-hidden="true">
-                            <img src="/icons/select-box-circle-fill.svg" alt="" width={20} height={20} />
-                          </span>
-                          <div className="job-note__content">
-                            <p className="job-note__title">{note.title}</p>
-                            <p className="job-note__description">{note.description}</p>
-                          </div>
-                          <span className="job-note__date">{note.date}</span>
-                        </div>
+                        <JobNoteRow key={note.id} note={note} />
                       ))}
                     </div>
                   </section>
