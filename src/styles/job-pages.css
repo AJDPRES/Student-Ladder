@@ -18,6 +18,7 @@
   --job-shell-padding: 32px;
   --job-card-meta-width: 120px;
   --job-filter-sticky-offset: 16px;
+  --job-topbar-height: 80px;
 }
 /* -------------------------------------------------------------------------- */
 /* Job search                                                                 */
@@ -1736,7 +1737,7 @@
   max-width: 287px;
   width: 100%;
   position: sticky;
-  top: 32px;
+  top: calc(var(--job-topbar-height, 80px) + 16px);
 }
 .job-sidebar {
   display: flex;
@@ -1780,7 +1781,10 @@
   box-shadow: 0px 0px 0px 4px #ebf1ff, 0px 0px 0px 2px #ffffff;
   cursor: pointer;
 }
-.job-sidebar__apply-icon img { display: block; }
+.job-sidebar__apply-icon img {
+  display: block;
+  filter: brightness(0) invert(1);
+}
 .job-sidebar__facts { display: flex; flex-direction: column; gap: 16px; }
 .job-sidebar__fact-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
 .job-sidebar__fact { display: flex; gap: 12px; align-items: center; }
