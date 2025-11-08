@@ -1713,7 +1713,6 @@
   width: 1px;
   background: #e2e4e9;
   align-self: stretch;
-  margin: 0 10px;
 }
 .job-related-card {
   display: flex;
@@ -1721,8 +1720,16 @@
   flex: 1 1 0;
   min-width: 0;
   height: 100%;
+  cursor: pointer;
 }
-.job-related-card__content { display: flex; flex-direction: column; gap: 16px; padding: 16px 24px; }
+.job-related-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 24px;
+  background: #ffffff;
+  transition: background-color 0.2s ease;
+}
 .job-related-card__row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
 .job-related-card__action {
   display: inline-flex;
@@ -1740,7 +1747,14 @@
 }
 .job-related-card__body { display: flex; flex-direction: column; gap: 4px; }
 .job-related-card__title-row { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
-.job-related-card__title { margin: 0; font-size: 15px; line-height: 1.6; font-weight: 500; color: #0a0d14; }
+.job-related-card__title {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: 500;
+  color: #0a0d14;
+  transition: color 0.2s ease;
+}
 .job-related-card__status { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px 2px 2px; border-radius: 999px; background: #cbf5e5; color: #176448; font-size: 12px; font-weight: 500; }
 .job-related-card__company { font-size: 14px; line-height: 1.4285714286; font-weight: 500; letter-spacing: -0.006em; color: #525866; }
 .job-related-card__footer {
@@ -1761,9 +1775,23 @@
   line-height: 1.3333333333;
   font-weight: 500;
   color: #525866;
+  background: #f6f8fa;
+  transition: background-color 0.2s ease;
 }
 .job-related-card__tag-icon img { display: block; }
 .job-related-card__posted { font-size: 12px; font-weight: 500; color: #525866; }
+.job-related-card:hover .job-related-card__content,
+.job-related-card:focus-within .job-related-card__content {
+  background: #f6f8fa;
+}
+.job-related-card:hover .job-related-card__title,
+.job-related-card:focus-within .job-related-card__title {
+  color: #162664;
+}
+.job-related-card:hover .job-related-card__tag,
+.job-related-card:focus-within .job-related-card__tag {
+  background: #ffffff;
+}
 @media (max-width: 768px) {
   .job-related__frame { padding: 0 24px 24px; }
   .job-related__cards {
@@ -2034,7 +2062,7 @@
 .job-modal__related-cards article {
   width: 100%;
 }
-.job-modal__related .job-related-card__content { padding: 0; }
+.job-modal__related .job-related-card__content { padding: 10px; }
 @media (max-width: 520px) {
   .job-modal-overlay { padding-inline: 16px; }
 }
